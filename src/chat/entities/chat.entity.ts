@@ -1,6 +1,6 @@
 // src/users/entities/user.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, DeleteDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
-import { User } from '../../users/entities/user.entity.js';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('chats') // Maps this class to the 'chats' database table
 export class Chat {

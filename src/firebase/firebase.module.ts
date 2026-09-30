@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
-import { FirestoreService } from './firestore.service.js';
+import { FirestoreService } from './firestore.service';
 
 // Define a unique injection token
 export const FIREBASE_ADMIN_TOKEN = 'FIREBASE_ADMIN_TOKEN';

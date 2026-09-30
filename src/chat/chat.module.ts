@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ChatService } from './chat.service.js';
-import { ChatController } from './chat.controller.js';
-import { UsersModule } from '../users/users.module.js';
-import { Chat } from './entities/chat.entity.js';
+import { ChatService } from './chat.service';
+import { ChatController } from './chat.controller';
+import { UsersModule } from '../users/users.module';
+import { Chat } from './entities/chat.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FirestoreService } from '../firebase/firestore.service.js';
+import { FirestoreService } from '../firebase/firestore.service';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([Chat])], // Import UsersModule to access UsersService

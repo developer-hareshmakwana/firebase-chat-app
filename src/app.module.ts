@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module.js';
-import { ChatModule } from './chat/chat.module.js';
-import { FirebaseModule } from './firebase/firebase.module.js';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ChatModule } from './chat/chat.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { FirebaseModule } from './firebase/firebase.module.js';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'), // Guaranteed to pull safely
         database: configService.get<string>('DB_NAME'),
-        entities: [import.meta.dirname + '/**/*.entity{.ts,.js}'], // Dynamically load all entity files
+        entities: [__dirname + '/**/*.entity{.ts,.js}'], // Dynamically load all entity files
         autoLoadEntities: true,
         synchronize: true, // Turn off in production!
       }),

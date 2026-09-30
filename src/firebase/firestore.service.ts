@@ -2,7 +2,7 @@
 import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { FieldValue, Firestore } from '@google-cloud/firestore';
 import { ConfigService } from '@nestjs/config';
-import { LastSeenDto, MarkReadDto } from '../chat/dto/message.dto.js';
+import { LastSeenDto, MarkReadDto } from '../chat/dto/message.dto';
 
 @Injectable()
 export class FirestoreService implements OnModuleInit {

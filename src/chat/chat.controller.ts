@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ChatService } from './chat.service.js';
-import { CreateChatDto } from './dto/create-chat.dto.js';
-import { UpdateChatDto } from './dto/update-chat.dto.js';
-import { SendMessageDto } from './dto/message.dto.js';
-import { FirestoreService } from '../firebase/firestore.service.js';
+import { ChatService } from './chat.service';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
+import { SendMessageDto } from './dto/message.dto';
+import { FirestoreService } from '../firebase/firestore.service';
 
 @Controller('chat')
 export class ChatController {

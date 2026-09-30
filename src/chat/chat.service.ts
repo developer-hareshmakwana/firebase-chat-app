@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateChatDto } from './dto/create-chat.dto.js';
-import { UpdateChatDto } from './dto/update-chat.dto.js';
-import { Chat } from './entities/chat.entity.js';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
+import { Chat } from './entities/chat.entity';
 
 @Injectable()
 export class ChatService {
