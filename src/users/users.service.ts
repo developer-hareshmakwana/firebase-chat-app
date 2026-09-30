@@ -5,13 +5,16 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Chat } from '../chat/entities/chat.entity.js';
 
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>, // 👈 Injected repository
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Chat)
+    private readonly chatRepository: Repository<Chat>,
   ) { }
 
   private readonly saltRounds = 10;
@@ -31,6 +34,14 @@ export class UsersService {
 
   findAll() {
     return `This action returns all users`;
+  }
+
+  getAllChats(userId: number) {
+    return this.chatRepository.createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.userA', 'userA')
+      .leftJoinAndSelect('chat.userB', 'userB')
+      .where('userA.id = :id OR userB.id = :id', { id: userId })
+      .getMany();
   }
 
   findOne(id: number) {

@@ -1,7 +1,8 @@
 // firestore.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Firestore } from '@google-cloud/firestore';
+import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { FieldValue, Firestore } from '@google-cloud/firestore';
 import { ConfigService } from '@nestjs/config';
+import { LastSeenDto, MarkReadDto } from '../chat/dto/message.dto.js';
 
 @Injectable()
 export class FirestoreService implements OnModuleInit {
@@ -58,5 +59,134 @@ export class FirestoreService implements OnModuleInit {
             id: doc.id,
             ...doc.data(),
         }));
+    }
+
+    async markMessageRead(
+        dto: MarkReadDto,
+    ) {
+        const { chatId, messageId, userId } = dto;
+
+        const messageRef = this.db
+            .collection('messages')
+            .doc(messageId);
+
+        const messageSnapshot = await messageRef.get();
+
+        if (!messageSnapshot.exists) {
+            throw new NotFoundException('Message not found');
+        }
+
+        const message = messageSnapshot.data();
+
+        // Important: make sure the message belongs
+        // to the requested chat.
+        if (message?.chatId !== chatId) {
+            throw new NotFoundException(
+                'Message does not belong to this chat',
+            );
+        }
+
+        // 4. Use chatId + userId as deterministic document ID
+        const documentId = `${chatId}_${userId}`;
+
+        // 5. Read receipt
+        const readReceiptRef = this.db
+            .collection('readReceipts')
+            .doc(documentId);
+
+        // 6. Last read message
+        const lastReadRef = this.db
+            .collection('lastReadMessages')
+            .doc(documentId);
+
+        const now = FieldValue.serverTimestamp();
+
+        // Update both atomically
+        const batch = this.db.batch();
+
+        batch.set(
+            readReceiptRef,
+            {
+                chatId,
+                userId,
+                messageId,
+                readAt: now,
+            },
+            {
+                merge: true,
+            },
+        );
+
+        batch.set(
+            lastReadRef,
+            {
+                chatId,
+                userId,
+                messageId,
+                updatedAt: now,
+            },
+            {
+                merge: true,
+            },
+        );
+
+        await batch.commit();
+
+        return {
+            success: true,
+            chatId,
+            messageId,
+            userId,
+        };
+    }
+
+    async markLastSeen(
+        dto: LastSeenDto,
+    ) {
+        const { chatId, messageId, userId } = dto;
+        const messageRef = this.db
+            .collection('messages')
+            .doc(messageId);
+
+        const messageSnapshot = await messageRef.get();
+
+        if (!messageSnapshot.exists) {
+            throw new NotFoundException(
+                'Message not found',
+            );
+        }
+
+        const message = messageSnapshot.data();
+
+        if (message?.chatId !== chatId) {
+            throw new BadRequestException(
+                'Message does not belong to this chat',
+            );
+        }
+
+        // 4. Update last read
+        const documentId = `${chatId}_${userId}`;
+
+        await this.db
+            .collection('lastReadMessages')
+            .doc(documentId)
+            .set(
+                {
+                    chatId,
+                    userId,
+                    messageId,
+                    updatedAt: FieldValue.serverTimestamp(),
+                },
+                {
+                    merge: true,
+                },
+            );
+
+        return {
+            success: true,
+            chatId,
+            userId,
+            messageId,
+        };
     }
 }

@@ -29,11 +29,23 @@ export class ChatController {
     @Param('messageId') messageId: string,
     @Body() body: {userId: number}
   ) {
-    return await this.firestoreService.saveMessage('messages', {
-      chatId: +chatId,
-      lastReadMessageId: messageId,
-      userId: body.userId,
-      lastReadAt: new Date().toISOString(),
+    return await this.firestoreService.markMessageRead({
+      chatId: chatId,
+      messageId: messageId,
+      userId: body.userId.toString(),
+    });
+  }
+
+  @Post(':chatId/lastseen')
+  async markLastSeen(
+    @Param('chatId') chatId: string,
+    @Param('messageId') messageId: string,
+    @Body() body: {userId: number}
+  ) {
+    return await this.firestoreService.markLastSeen({
+      chatId: chatId,
+      messageId: messageId,
+      userId: body.userId.toString(),
     });
   }
 

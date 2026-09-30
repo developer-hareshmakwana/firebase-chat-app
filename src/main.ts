@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
  const config = new DocumentBuilder()
-    .setTitle('My NestJS API')
+    .setTitle('Chat API Docs')
     .setDescription('The core API description and endpoints')
     .setVersion('1.0')
     .addTag('users') // Optional: group your endpoints by tags
@@ -16,7 +16,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   // 3. Setup the Swagger UI route (e.g., available at /api)
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
