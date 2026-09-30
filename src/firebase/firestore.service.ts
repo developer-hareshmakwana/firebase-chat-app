@@ -80,7 +80,8 @@ export class FirestoreService implements OnModuleInit {
 
         // Important: make sure the message belongs
         // to the requested chat.
-        if (message?.chatId !== chatId) {
+        console.log('Message chatId:', message?.chatId, 'Requested chatId:', chatId);
+        if (+message?.chatId !== +chatId) {
             throw new NotFoundException(
                 'Message does not belong to this chat',
             );
@@ -158,7 +159,7 @@ export class FirestoreService implements OnModuleInit {
 
         const message = messageSnapshot.data();
 
-        if (message?.chatId !== chatId) {
+        if (+message?.chatId !== +chatId) {
             throw new BadRequestException(
                 'Message does not belong to this chat',
             );
